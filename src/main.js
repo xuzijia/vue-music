@@ -1,15 +1,26 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import fastclick from 'fastclick'
+import 'common/stylus/index.styl'
+import axios from 'axios'
+import VueLazyload from 'vue-lazyload'
+import 'common/icon/iconfont.css' /*引入图标文件*/
 
-Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+axios.defaults.baseURL = 'http://localhost:3001';
+
+//解决移动端按钮300ms延迟
+fastclick.attach(document.body);
+Vue.config.productionTip = false;
+//图片懒加载
+Vue.use(VueLazyload, {
+  loading: require('common/image/default.png')
+})
+
 new Vue({
   el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
+  render: h => h(App)
 })
