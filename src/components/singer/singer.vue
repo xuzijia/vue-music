@@ -2,7 +2,7 @@
   <div class="singer" ref="singer">
     <scroll ref="scroll" class="singer-content" :data="singers">
       <div class="list">
-        <div class="item" v-for="item of singers" :key="item.accountId" @click="select(item.accountId)">
+        <div class="item" v-for="item of singers" :key="item.accountId" @click="select(item)">
           <div class="headImg">
             <img v-lazy="item.picUrl+headImgSize" alt="">
           </div>
@@ -24,7 +24,10 @@
   import Loading from 'base/loading/loading'
   import {getHotSinger} from 'api/singer'
   import {config} from 'api/config'
+  import {mapMutations} from 'vuex'
+  import {playlistMixin} from 'common/js/mixin'
   export default {
+    mixins: [playlistMixin],
     data() {
       return {
         singers: [],
@@ -36,20 +39,30 @@
       this._getSingerList()
     },
     methods: {
+      handlePlaylist(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.singer.style.bottom = bottom
+        this.$refs.scroll.refresh()
+      },
       _getSingerList() {
         getHotSinger().then((res) => {
           if (res.code === config.apiConfig.request_ok) {
-            console.log(res);
+            // console.log(res);
             this.singers=res.artists;
           }
         })
       },
-      select(accountId){
+      select(singer){
+        //将歌手的信息设置到vuex
+        this.setSinger(singer);
         //进入歌手详情页
         this.$router.push({
-          path:`/singer/${accountId}`
+          path:`/singer/${singer.id}`
         })
-      }
+      },
+      ...mapMutations({
+        setSinger:'SET_SINGER'
+      })
     },
     components: {
       Scroll,
@@ -63,8 +76,8 @@
   .singer
     position: fixed
     top: 88px
-    bottom: 0
     width: 100%
+    bottom 0
   .singer-content
     position: relative
     width: 100%

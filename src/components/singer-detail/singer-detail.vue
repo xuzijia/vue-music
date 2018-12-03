@@ -1,14 +1,68 @@
 <template>
   <transition name="slide">
-    <div class="singer-detail">
-      这是歌手详情页
-    </div>
+    <singer-songs :artist="artist" :songs="songs"></singer-songs>
+    <!--mv组件-->
   </transition>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+  import {getHotSong,getSingerAlbum,getSingerMv} from 'api/singer'
+  import {config} from 'api/config'
+  import SingerSongs from 'components/singer-songs/singer-songs'
   export default {
-    name: 'singer-detail'
+    name: 'singer-detail',
+    data(){
+      return {
+        artist:{},
+        songs:[]
+
+      }
+    },
+    computed:{
+      ...mapGetters([
+        'singer'
+      ])
+    },
+    components:{
+      SingerSongs,
+    },
+    created(){
+      if(this.singer.id===undefined){
+        this.$router.push("/singer");
+        return;
+      }
+      this._getHotSong(this.singer.id);
+      // this._getSingerAlbum(this.singer.id);
+      // this._getSingerMv(this.singer.id);
+    },
+    methods:{
+      _getHotSong(id){
+        //获取歌手热门单曲
+        getHotSong(id).then((res)=>{
+          if(res.code==config.apiConfig.request_ok){
+            this.artist=res.artist;
+            this.songs=res.hotSongs;
+          }
+        })
+      },
+      _getSingerAlbum(id){
+        //获取歌手专辑
+        getSingerAlbum(id).then((res)=>{
+          if(res.code==config.apiConfig.request_ok){
+            console.log(res);
+          }
+        })
+      },
+      _getSingerMv(id){
+        //获取歌手mv
+        getSingerMv(id).then((res)=>{
+          if(res.code==config.apiConfig.request_ok){
+            console.log(res);
+          }
+        })
+      }
+    }
   }
 </script>
 
@@ -16,18 +70,5 @@
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
 
-  .slide-enter-active, .slide-leave-active
-    transition: all 0.3s
 
-  .slide-enter, .slide-leave-to
-    transform: translate3d(100%, 0, 0)
-
-  .singer-detail
-    position: fixed
-    z-index: 100
-    top: 0
-    left: 0
-    bottom: 0
-    right: 0
-    background: $color-background
 </style>

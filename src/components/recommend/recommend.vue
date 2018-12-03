@@ -45,7 +45,7 @@
             </router-link>
           <!--热门歌单版面设计-->
           <div class="playlist">
-            <div class="item" v-for="(item,index) of playlists" :key="index">
+            <div class="item" v-for="(item,index) of playlists" :key="index" @click="selectItem(item)">
                 <div class="img">
                   <img v-lazy="item.coverImgUrl+imgSize" width="100" height="100" >
                 </div>
@@ -62,7 +62,7 @@
           </router-link>
           <!--新碟上架版面设计-->
           <div class="new-album-list">
-              <div class="item" v-for="(item,index) of newlists" :key="index">
+              <div class="item" v-for="(item,index) of newlists" :key="index" @click="selectItemByAlbum(item)">
                 <div class="img">
                   <img v-lazy="item.picUrl+imgSize" width="100" height="100" >
                 </div>
@@ -88,8 +88,11 @@
   import Scroll from 'base/scroll/scroll'
   import {getBanner, getPlayList,getDjRecommend,getNewAlbumList} from 'api/recommend'
   import {config} from 'api/config'
+  import {mapMutations} from 'vuex'
+  import {playlistMixin} from 'common/js/mixin'
 
   export default {
+    mixins: [playlistMixin],
     data () {
       return {
         banners: [],
@@ -108,6 +111,11 @@
       this._getNewAlbumList()
     },
     methods: {
+      handlePlaylist(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.recommend.style.bottom = bottom
+        this.$refs.scroll.refresh()
+      },
       loadImage () {
         if (!this.checkloaded) {
           this.checkloaded = true
@@ -142,7 +150,25 @@
             this.newlists=res.albums;
           }
         })
-      }
+      },
+      selectItem(item){
+        this.$router.push({
+          path: `/recommend/${item.id}`
+        })
+        this.setDisc(item)
+      },
+      selectItemByAlbum(item){
+        this.$router.push({
+          path: `/recommend/album/${item.id}`
+        })
+        this.setAlbum(item)
+      },
+
+      ...mapMutations({
+        setDisc:'SET_DISC',
+        setAlbum:'SET_ALBUM'
+      })
+
     },
     components: {
       Slider,

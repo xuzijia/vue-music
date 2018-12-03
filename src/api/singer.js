@@ -16,3 +16,37 @@ export function getHotSinger () {
   };
   return fetch(url,data);
 }
+
+/**
+ * 获取歌手热门单曲
+ */
+export function getHotSong(id){
+  const url="/artist/song";
+  const data={
+    id:id
+  };
+  return fetch(url,data);
+}
+
+/**
+ * 获取歌手专辑
+ */
+export function getSingerAlbum(id){
+  const url="/artist/album";
+  const data={
+    id:id,
+    limit:30
+  }
+  return fetch(url,data);
+}
+
+/**
+ * 获取歌手mv
+ */
+export function getSingerMv(id){
+  const url="/artist/mv";
+  const data={
+    id:id,
+  }
+  return fetch(url,data);
+}

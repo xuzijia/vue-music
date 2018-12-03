@@ -7,5 +7,10 @@
 export const config = {
   apiConfig:{
     request_ok:200
+  },
+  playMode : {
+    sequence: 0,
+    loop: 1,
+    random: 2
   }
 }

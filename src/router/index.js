@@ -8,34 +8,80 @@ import Singer from 'components/singer/singer'
 import Rank from 'components/rank/rank'
 import Search from 'components/search/search'
 import SingerDetail from 'components/singer-detail/singer-detail'
+import Songs from 'components/singer-songs/children/songs'
+import Album from 'components/singer-songs/children/album'
+import Mv from 'components/singer-songs/children/mv'
+import MvPlayer from 'components/mv/mv-player'
+import Disc from 'components/disc/disc'
+import AlbumDetail from 'components/album/album'
+
 export default new Router({
   routes: [
     {
       path: '/',
-      redirect:'/recommend'
+      redirect: '/recommend'
 
     },
     {
-      path:'/recommend',
-      component:Recommend
-    },
-    {
-      path:'/singer',
-      component:Singer,
-      children:[
+      path: '/recommend',
+      component: Recommend,
+      children: [
         {
-          path:":id",
-          component:SingerDetail
+          path: ':id',
+          component: Disc
+        },
+        {
+          path: 'album/:aid',
+          component: AlbumDetail
         }
       ]
     },
     {
-      path:'/rank',
-      component:Rank
+      path: '/singer',
+      component: Singer,
+      children: [
+        {
+          path: ':id',
+          component: SingerDetail,
+          children: [
+            {
+              path: '/',
+              redirect: '/songs'
+            },
+            {
+              path: '/songs',
+              component: Songs,
+            },
+            {
+              path: '/album',
+              component: Album,
+            },
+            {
+              path: '/mv',
+              component: Mv
+            }
+          ]
+        }
+      ]
     },
     {
-      path:'/search',
-      component:Search
+      path: '/rank',
+      component: Rank
     },
+    {
+      path: '/search',
+      component: Search
+    },
+
+    {
+      path: '/mv/player/:id',
+      component: MvPlayer
+    },
+    {
+      path: '/album/detail/:id',
+      component: AlbumDetail
+    },
+
+
   ]
 })
