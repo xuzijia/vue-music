@@ -97,7 +97,7 @@
     </transition>
     <!--<playlist ref="playlist"></playlist>-->
     <audio ref="audio" :src="currentSong.url" @play="ready" @error="error" @timeupdate="updateTime"
-           @ended="end" autoplay></audio>
+           @ended="end" autoplay  type="audio/mpeg"></audio>
   </div>
 </template>
 

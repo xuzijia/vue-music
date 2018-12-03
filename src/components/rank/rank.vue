@@ -1,15 +1,15 @@
 <template>
   <div class="rank" ref="rank">
     <scroll :data="topList" class="toplist" ref="toplist">
-      <ul>
-        <li class="item" >
+      <ul v-for="(item,index) of topList" :key="index">
+        <li class="item" @click="selectItem(item)">
           <div class="icon">
-            <img width="100" height="100" />
+            <img width="100" height="100" v-lazy="item.coverImgUrl" style="border-radius: 5px"/>
           </div>
           <ul class="songlist">
-            <li class="song" >
-              <span></span>
-              <span></span>
+            <li class="song" v-for="(song,i) of item.tracks" :key="i">
+              <span>{{i+1}}.</span>
+              <span>{{song.first}} - {{song.second}}</span>
             </li>
           </ul>
         </li>
@@ -27,16 +27,17 @@
   import Loading from 'base/loading/loading'
   import {config} from 'api/config'
   import {playlistMixin} from 'common/js/mixin'
-
+  import {getRankList} from 'api/rank'
+  import {mapMutations} from 'vuex'
   export default {
     mixins: [playlistMixin],
-    created() {
-
-    },
     data() {
       return {
         topList: []
       }
+    },
+    created() {
+      this._getRankList();
     },
     methods: {
       handlePlaylist(playlist) {
@@ -45,7 +46,22 @@
         this.$refs.rank.style.bottom = bottom
         this.$refs.toplist.refresh()
       },
-
+      _getRankList(){
+        getRankList().then((res)=>{
+          if(res.code==config.apiConfig.request_ok){
+            this.topList=res.list;
+          }
+        })
+      },
+      selectItem(item){
+        this.$router.push({
+          path: `/rank/${item.id}`
+        })
+        this.setDisc(item)
+      },
+      ...mapMutations({
+        setDisc:'SET_DISC',
+      })
     },
     components: {
       Scroll,
@@ -69,10 +85,10 @@
       .item
         display: flex
         margin: 0 20px
-        padding-top: 20px
+        padding-top: 10px
         height: 100px
         &:last-child
-          padding-bottom: 20px
+          padding-bottom: 10px
         .icon
           flex: 0 0 100px
           width: 100px

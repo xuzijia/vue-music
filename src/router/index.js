@@ -14,6 +14,7 @@ import Mv from 'components/singer-songs/children/mv'
 import MvPlayer from 'components/mv/mv-player'
 import Disc from 'components/disc/disc'
 import AlbumDetail from 'components/album/album'
+import TopList from 'components/top-list/top-list'
 
 export default new Router({
   routes: [
@@ -66,7 +67,13 @@ export default new Router({
     },
     {
       path: '/rank',
-      component: Rank
+      component: Rank,
+      children: [
+        {
+          path: ':id',
+          component: TopList
+        },
+      ]
     },
     {
       path: '/search',

@@ -10,8 +10,8 @@ import VueLazyload from 'vue-lazyload'
 import 'common/icon/iconfont.css' /*引入图标文件*/
 
 
-// axios.defaults.baseURL = 'http://91cloud.top';
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = 'http://91cloud.top';
+// axios.defaults.baseURL = 'http://localhost:3001';
 
 //解决移动端按钮300ms延迟
 // fastclick.attach(document.body);
