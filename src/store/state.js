@@ -1,4 +1,5 @@
 import {config} from 'api/config'
+import {loadSearch, loadPlay, loadFavorite} from 'common/js/cache'
 const state = {
   singer: {},
   playing: false,
@@ -9,6 +10,7 @@ const state = {
   currentIndex: -1,
   songs:[],
   disc:{},
-  album:{}
+  album:{},
+  searchHistory: loadSearch(),
 }
 export default state

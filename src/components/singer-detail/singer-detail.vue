@@ -1,7 +1,6 @@
 <template>
   <transition name="slide">
     <singer-songs :artist="artist" :songs="songs"></singer-songs>
-    <!--mv组件-->
   </transition>
 </template>
 

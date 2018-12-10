@@ -1,25 +1,27 @@
 <template>
-  <div class="rank" ref="rank">
-    <scroll :data="topList" class="toplist" ref="toplist">
-      <ul v-for="(item,index) of topList" :key="index">
-        <li class="item" @click="selectItem(item)">
-          <div class="icon">
-            <img width="100" height="100" v-lazy="item.coverImgUrl" style="border-radius: 5px"/>
-          </div>
-          <ul class="songlist">
-            <li class="song" v-for="(song,i) of item.tracks" :key="i">
-              <span>{{i+1}}.</span>
-              <span>{{song.first}} - {{song.second}}</span>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <div class="loading-container" v-show="!topList.length">
-        <loading></loading>
-      </div>
-    </scroll>
-    <router-view></router-view>
-  </div>
+  <transition name="slide">
+    <div class="rank" ref="rank">
+      <scroll class="top" ref="toplist" :data="topList">
+        <ul v-for="(item,index) of topList" :key="index">
+          <li class="item" @click="selectItem(item)">
+            <div class="icon">
+              <img width="100" height="100" v-lazy="item.coverImgUrl" style="border-radius: 5px"/>
+            </div>
+            <ul class="songlist">
+              <li class="song" v-for="(song,i) of item.tracks" :key="i">
+                <span>{{i+1}}.</span>
+                <span>{{song.first}} - {{song.second}}</span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <div class="loading-container" v-show="!topList.length">
+          <loading></loading>
+        </div>
+      </scroll>
+      <router-view></router-view>
+    </div>
+  </transition>
 </template>
 
 <script type="text/ecmascript-6">
@@ -29,38 +31,39 @@
   import {playlistMixin} from 'common/js/mixin'
   import {getRankList} from 'api/rank'
   import {mapMutations} from 'vuex'
+
   export default {
     mixins: [playlistMixin],
-    data() {
+    data () {
       return {
         topList: []
       }
     },
-    created() {
-      this._getRankList();
+    created () {
+      this._getRankList()
     },
     methods: {
-      handlePlaylist(playlist) {
+      handlePlaylist (playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
 
         this.$refs.rank.style.bottom = bottom
         this.$refs.toplist.refresh()
       },
-      _getRankList(){
-        getRankList().then((res)=>{
-          if(res.code==config.apiConfig.request_ok){
-            this.topList=res.list;
+      _getRankList () {
+        getRankList().then((res) => {
+          if (res.code == config.apiConfig.request_ok) {
+            this.topList = res.list
           }
         })
       },
-      selectItem(item){
+      selectItem (item) {
         this.$router.push({
           path: `/rank/${item.id}`
         })
         this.setDisc(item)
       },
       ...mapMutations({
-        setDisc:'SET_DISC',
+        setDisc: 'SET_DISC',
       })
     },
     components: {
@@ -79,7 +82,7 @@
     width: 100%
     top: 88px
     bottom: 0
-    .toplist
+    .top
       height: 100%
       overflow: hidden
       .item

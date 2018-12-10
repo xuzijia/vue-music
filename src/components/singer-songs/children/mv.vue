@@ -1,11 +1,15 @@
 <template>
   <div class="mv-list" ref="mvList">
     <!--遍历歌手mv列表-->
-    <scroll ref="scroll" class="mvs-content" :data="mvs">
+    <scroll ref="scroll" class="mvs-content" :data="mvs"
+            :pullup="pullup"
+            :beforeScroll="beforeScroll"
+            @scrollToEnd="loadMore"
+    >
       <ul>
         <li v-for="(item,index) of mvs" :key="index" @click="playMv(item.id)">
           <div class="img">
-            <img v-lazy="item.imgurl+imgSize" alt="">
+            <img :src="item.imgurl+imgSize" alt="">
             <div class="zz">
             {{formatNumber(item.playCount)}}
             </div>
@@ -18,12 +22,13 @@
             <p class="time">{{item.publishTime}}</p>
           </div>
         </li>
+        <loading v-show="hasMore" title=""></loading>
       </ul>
-      <div class="loading-container" v-show="!mvs.length" v-if="flag">
+      <div class="loading-container" v-show="!mvs.length"   v-if="load">
         <loading></loading>
       </div>
-      <div class="tip" v-else style="text-align: center; font-size: 14px;margin-top: 10px" >
-        暂无mv信息...
+      <div v-show="!mvs.length && !load" class="no-result-wrapper">
+        <no-result title="抱歉，暂无视频"></no-result>
       </div>
     </scroll>
   </div>
@@ -37,6 +42,7 @@
   import {getSingerMv} from 'api/singer'
   import {config} from 'api/config'
   import {playlistMixin} from 'common/js/mixin'
+  import NoResult from 'base/no-result/no-result'
   export default {
     name: 'mv',
     mixins: [playlistMixin],
@@ -44,7 +50,12 @@
       return {
         mvs:[],
         imgSize:"?param=120y70",
-        flag:true
+        load:true,
+        hasMore:false,
+        pullup: true,
+        beforeScroll: true,
+        page:0,
+        num:20
       }
     },
     created(){
@@ -53,6 +64,7 @@
         return;
       }
       this._getSingerMv(this.singer.id);
+      console.log(this.mvs)
     },
     methods:{
       handlePlaylist(playlist) {
@@ -60,19 +72,31 @@
         this.$refs.mvList.style.bottom = bottom
         this.$refs.scroll.refresh()
       },
-      _getSingerMv(id){
-          getSingerMv(id).then(res=>{
+      _getSingerMv(id,flag){
+          getSingerMv(id,this.page*this.num,this.num).then(res=>{
             if(res.code==config.apiConfig.request_ok){
-              this.mvs=res.mvs;
-              if(res.mvs.length==0){
-                this.flag=false;
+              if(flag){
+                this.mvs=this.mvs.concat(res.mvs);
+              }else{
+                this.mvs=res.mvs;
               }
+              if(res.mvs.length==0){
+                this.load=false;
+              }
+              this.hasMore=res.hasMore;
               console.log(res);
             }
           })
       },
       formatNumber(number){
         return numberFormat(number);
+      },
+      loadMore () {
+        if (!this.hasMore) {
+          return
+        }
+        this.page++
+        this._getSingerMv(this.singer.id,true);
       },
       playMv(id){
         this.$router.push({
@@ -87,7 +111,8 @@
     },
     components:{
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   }
 </script>
@@ -144,8 +169,11 @@
             overflow: hidden
             text-overflow:ellipsis
             white-space: nowrap
-
-
+    .no-result-wrapper
+      position: absolute
+      width: 100%
+      top: 50%
+      transform: translateY(-50%)
 
 
 

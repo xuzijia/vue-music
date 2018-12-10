@@ -31,6 +31,9 @@ const mutations = {
   [types.SET_ALBUM](state, album) {
     state.album = album
   },
+  [types.SET_SEARCH_HISTORY](state, history) {
+    state.searchHistory = history
+  },
 }
 
 export default mutations

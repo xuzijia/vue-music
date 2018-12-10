@@ -43,10 +43,13 @@ export function getSingerAlbum(id){
 /**
  * 获取歌手mv
  */
-export function getSingerMv(id){
+export function getSingerMv(id,offset,limit){
   const url="/artist/mv";
   const data={
     id:id,
+    offset:offset,
+    limit:limit
+
   }
   return fetch(url,data);
 }

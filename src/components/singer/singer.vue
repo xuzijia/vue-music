@@ -1,22 +1,15 @@
 <template>
-  <div class="singer" ref="singer">
-    <scroll ref="scroll" class="singer-content" :data="singers">
-      <div class="list">
-        <div class="item" v-for="item of singers" :key="item.accountId" @click="select(item)">
-          <div class="headImg">
-            <img v-lazy="item.picUrl+headImgSize" alt="">
-          </div>
-          <div class="name">
-            {{item.name}}<span class="alias" v-if="item.alias.length>0">（&nbsp;{{item.alias[0]}}&nbsp;）</span>
-          </div>
+  <transition name="slide">
+    <div class="singer" ref="singer">
+      <scroll ref="scroll" class="singer-content" :data="singers">
+       <singer :singers="singers" @selectItem="select"></singer>
+        <div class="loading-container" v-show="!singers.length">
+          <loading></loading>
         </div>
-      </div>
-      <div class="loading-container" v-show="!singers.length">
-        <loading></loading>
-      </div>
-    </scroll>
-    <router-view></router-view>
-  </div>
+      </scroll>
+      <router-view></router-view>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -26,47 +19,49 @@
   import {config} from 'api/config'
   import {mapMutations} from 'vuex'
   import {playlistMixin} from 'common/js/mixin'
+  import Singer from 'components/common/singer'
+
   export default {
     mixins: [playlistMixin],
-    data() {
+    data () {
       return {
         singers: [],
-        headImgSize:"?param=60y60"
       }
     },
-    created() {
+    created () {
       //获取热门歌手列表
       this._getSingerList()
     },
     methods: {
-      handlePlaylist(playlist) {
+      handlePlaylist (playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.singer.style.bottom = bottom
         this.$refs.scroll.refresh()
       },
-      _getSingerList() {
+      _getSingerList () {
         getHotSinger().then((res) => {
           if (res.code === config.apiConfig.request_ok) {
             // console.log(res);
-            this.singers=res.artists;
+            this.singers = res.artists
           }
         })
       },
-      select(singer){
+      select (singer) {
         //将歌手的信息设置到vuex
-        this.setSinger(singer);
+        this.setSinger(singer)
         //进入歌手详情页
         this.$router.push({
-          path:`/singer/${singer.id}`
+          path: `/singer/${singer.id}`
         })
       },
       ...mapMutations({
-        setSinger:'SET_SINGER'
+        setSinger: 'SET_SINGER'
       })
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      Singer
     }
   }
 
@@ -78,28 +73,11 @@
     top: 88px
     width: 100%
     bottom 0
+
   .singer-content
     position: relative
     width: 100%
     height: 100%
     overflow: hidden
-  .list
-    padding:10px
-    padding-left 20px
-    .item
-      display flex
-      margin-bottom 10px
-      .name
-        margin-left 20px
-        width 100%
-        line-height 62px
-        border-bottom 1px solid rgba(204, 204, 204, 0.1)
-        .alias
-          color rgba(204, 204, 204,0.7)
-  .headImg
-    img
-      border-radius 60px
-      width 60px
-      height 60px
 
 </style>

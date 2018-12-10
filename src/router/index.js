@@ -15,6 +15,7 @@ import MvPlayer from 'components/mv/mv-player'
 import Disc from 'components/disc/disc'
 import AlbumDetail from 'components/album/album'
 import TopList from 'components/top-list/top-list'
+import PlayList from 'components/playlist/playlist'
 
 export default new Router({
   routes: [
@@ -34,7 +35,7 @@ export default new Router({
         {
           path: 'album/:aid',
           component: AlbumDetail
-        }
+        },
       ]
     },
     {
@@ -89,6 +90,9 @@ export default new Router({
       component: AlbumDetail
     },
 
-
+    {
+      path:'/playlist',
+      component:PlayList
+    }
   ]
 })

@@ -26,7 +26,7 @@ export function getLyric(id) {
 export function getMvInfo (id) {
   const url="/mv/detail";
   const data={
-    id:id
+    id:id,
   }
   return fetch(url,data);
 }

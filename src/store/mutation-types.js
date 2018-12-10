@@ -17,3 +17,5 @@ export const SET_SONGS='SET_SONGS'
 export const SET_DISC='SET_DISC'
 
 export const SET_ALBUM='SET_ALBUM'
+
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'

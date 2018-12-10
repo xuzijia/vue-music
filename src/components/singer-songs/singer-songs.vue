@@ -1,67 +1,69 @@
 <template>
-  <div class="music-list">
-    <back :url="backUrl"></back>
-    <h1 class="title">{{artist.name}}</h1>
-    <div class="bg-image" :style="bgStyle">
-      <div class="play-wrapper">
-        <!--<div ref="playBtn" class="play" v-show="artist.picUrl">-->
+  <transition name="slide">
+    <div class="music-list">
+      <back :url="backUrl"></back>
+      <h1 class="title">{{artist.name}}</h1>
+      <div class="bg-image" :style="bgStyle">
+        <div class="play-wrapper">
+          <!--<div ref="playBtn" class="play" v-show="artist.picUrl">-->
           <!--<i class="icon-play"></i>-->
           <!--<span class="text">随机播放全部</span>-->
-        <!--</div>-->
+          <!--</div>-->
+        </div>
+        <div class="filter"></div>
       </div>
-      <div class="filter"></div>
-    </div>
 
-    <!--歌手歌曲 专辑 视频列表-->
-    <div class="tab">
-      <router-link tag="div" class="tab-item" to="/songs">
-        <span class="tab-link">热门单曲</span>
-      </router-link>
-      <router-link tag="div" class="tab-item" to="/album">
-        <span class="tab-link">专辑</span>
-      </router-link>
-      <router-link tag="div" class="tab-item" to="/mv">
+      <!--歌手歌曲 专辑 视频列表-->
+      <div class="tab">
+        <router-link tag="div" class="tab-item" to="/songs">
+          <span class="tab-link">热门单曲</span>
+        </router-link>
+        <router-link tag="div" class="tab-item" to="/album">
+          <span class="tab-link">专辑</span>
+        </router-link>
+        <router-link tag="div" class="tab-item" to="/mv">
       <span class="tab-link">视频
       </span>
-      </router-link>
-      <!--<router-link tag="div" class="tab-item" to="/search">-->
+        </router-link>
+        <!--<router-link tag="div" class="tab-item" to="/search">-->
         <!--<span class="tab-link">详情</span>-->
-      <!--</router-link>-->
+        <!--</router-link>-->
+      </div>
+
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </div>
-
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
-
-  </div>
+  </transition>
 </template>
 
 <script>
   import back from 'base/back/back'
+
   export default {
     name: 'singer-songs',
-    props:{
-      artist:{
-        type:Object,
+    props: {
+      artist: {
+        type: Object,
         default: {}
       },
-      songs:{
-        type:Array,
-        default:[]
+      songs: {
+        type: Array,
+        default: []
       }
     },
-    data(){
+    data () {
       return {
-        backUrl:"/singer"
+        backUrl: '/singer'
       }
     },
 
-    computed:{
-      bgStyle(){
+    computed: {
+      bgStyle () {
         return `background-image:url('${this.artist.picUrl}?param=450y300')`
       },
     },
-    components:{
+    components: {
       back
     }
   }
@@ -70,7 +72,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
-
 
   .tab
     display: flex

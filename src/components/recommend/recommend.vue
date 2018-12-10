@@ -26,13 +26,13 @@
             <span class="text">每日推荐</span>
           </div>
           <div>
-            <div class="icon">
+            <div class="icon" @click="selectPlaylist">
               <i class="iconfont icon-icon-test"></i>
             </div>
             <span class="text">歌单</span>
           </div>
           <div>
-            <div class="icon">
+            <div class="icon" @click="toTop">
               <i class="iconfont icon-paihangbang"></i>
             </div>
             <span class="text">排行榜</span>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="recommend-list hr "  v-show="playlists.length">
-            <router-link to="/">
+            <router-link to="/playlist">
               <h1 class="list-title"> 热门歌单推荐 &gt;</h1>
             </router-link>
           <!--热门歌单版面设计-->
@@ -115,6 +115,16 @@
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottom
         this.$refs.scroll.refresh()
+      },
+      toTop(){
+        this.$router.push(
+          {path:"/rank"}
+        )
+      },
+      selectPlaylist(){
+        this.$router.push({
+          path:"/playlist"
+        })
       },
       loadImage () {
         if (!this.checkloaded) {

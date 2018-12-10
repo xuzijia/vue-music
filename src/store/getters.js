@@ -26,3 +26,6 @@ export const songs = state => state.songs
 export const disc = state => state.disc
 
 export const album = state => state.album
+
+export const searchHistory = state => state.searchHistory
+

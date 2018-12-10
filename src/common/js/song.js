@@ -21,6 +21,7 @@ export function createSong(musicData) {
     album: musicData.album.name,
     dt: musicData.duration,
     image: musicData.album.picUrl,
+    imagev1:musicData.album.img1v1Url,
     url: `http://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`,
     mv:musicData.mvid,
     alias:musicData.alias

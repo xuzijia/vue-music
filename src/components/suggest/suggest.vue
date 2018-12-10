@@ -1,0 +1,228 @@
+<template>
+  <scroll ref="suggest"
+          class="suggest"
+          :data="result"
+          :pullup="pullup"
+          :beforeScroll="beforeScroll"
+          @scrollToEnd="searchMore"
+          @beforeScroll="listScroll"
+  >
+    <ul class="suggest-list" v-show="type==1">
+      <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
+        <div class="icon">
+          <i :class="getIconCls(item)"></i>
+        </div>
+        <div class="name">
+          <p class="text" v-html="getDisplayName(item)"></p>
+        </div>
+      </li>
+      <loading v-show="hasMore" title=""></loading>
+    </ul>
+    <div v-show="type==100">
+      <singer :singers="singers" @selectItem="select"></singer>
+      <loading title="" v-show="hasMore"></loading>
+    </div>
+    <div v-show="!hasMore && !result.length && type==1" class="no-result-wrapper">
+      <no-result title="抱歉，暂无搜索结果"></no-result>
+    </div>
+    <div v-show="!hasMore && !singers.length && type==100" class="no-result-wrapper">
+      <no-result title="抱歉，暂无搜索结果"></no-result>
+    </div>
+  </scroll>
+</template>
+
+<script type="text/ecmascript-6">
+  import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
+  import NoResult from 'base/no-result/no-result'
+  import {search} from 'api/search'
+  import {config} from 'api/config'
+  import {createSongBySinger} from 'common/js/song'
+  import {mapMutations, mapActions} from 'vuex'
+  import Singer from 'components/common/singer'
+
+  const perpage = 20
+
+  const SONG = 1 //单曲
+  const SINGER = 100 //歌手
+  const PLAYLIST = 1000 //歌单
+  const VIDEO = 1014 //视频
+
+  export default {
+    props: {
+      showSinger: {
+        type: Boolean,
+        default: true
+      },
+      query: {
+        type: String,
+        default: ''
+      },
+      type: {
+        type: Number,
+        default: 1
+      }
+    },
+    data () {
+      return {
+        page: 0,
+        pullup: true,
+        beforeScroll: true,
+        hasMore: true,
+        result: [],
+        singers: []
+      }
+    },
+    methods: {
+      refresh () {
+        this.$refs.suggest.refresh()
+      },
+      setType(type){
+        this.type=type;
+      },
+      //点击歌手进入歌手页
+      select (singer) {
+        //将歌手的信息设置到vuex
+        this.setSinger(singer)
+        //进入歌手详情页
+        this.$router.push({
+          path: `/singer/${singer.id}`
+        })
+      },
+      search () {
+        this.result = []
+        this.singers=[]
+        //重置分页参数
+        this.page = 0
+        this.hasMore = true
+        this.$refs.suggest.scrollTo(0, 0)
+        search(this.query, this.type, this.page * perpage, perpage).then((res) => {
+          if (res.code === config.apiConfig.request_ok) {
+            //根据不同的搜索类型 解析数据
+            if (this.type==SONG) {
+              this.result = this._genResult(res.result)
+              this._checkMore(res.result)
+            }else if(this.type==SINGER){
+              console.log(res.result.artists)
+              this.singers=res.result.artists==undefined?[]:res.result.artists;
+              if(res.result.artists==undefined){
+                this.hasMore=false;
+              }else{
+                this._checkMoreForSinger(res.result);
+              }
+            }
+          }
+        })
+      },
+      //下拉加载更多
+      searchMore () {
+        if (!this.hasMore) {
+          return
+        }
+        this.page++
+        search(this.query, this.type, this.page * perpage, perpage).then((res) => {
+          if (res.code === config.apiConfig.request_ok) {
+            //根据不同的搜索类型 解析数据
+            if (this.type==SONG) {
+              this.result = this.result.concat(this._genResult(res.result))
+              this._checkMore(res.result)
+            }else if(this.type==SINGER){
+              this.singers=this.singers.concat(res.result.artists);
+              this._checkMoreForSinger(res.artists);
+            }
+
+          }
+        })
+      },
+      listScroll () {
+        this.$emit('listScroll')
+      },
+      selectItem (item) {
+        this.insertSong(item)
+        this.$emit('select', item)
+      },
+      getIconCls () {
+        return 'icon-music'
+      },
+      _genResult (data) {
+        let ret = []
+        if (data.songs) {
+          ret = ret.concat(this._normalizeSongs(data.songs))
+        }
+        return ret
+      },
+      _normalizeSongs (list) {
+        let ret = []
+        list.forEach((musicData) => {
+          if (musicData.id && musicData.al.id) {
+            ret.push(createSongBySinger(musicData))
+          }
+        })
+        return ret
+      },
+      getDisplayName (item) {
+        return `${item.name}-${item.singer}`
+      },
+      _checkMore (data) {
+        if (data.songCount == 0 || !data.songs.length || (data.songs.length + this.page * perpage) >= data.songCount) {
+          this.hasMore = false
+        }
+      },
+      _checkMoreForSinger(data){
+        if (data.artistCount == 0 || !data.artists.length || (data.artists.length + this.page * perpage) >= data.artistCount) {
+          this.hasMore = false
+        }
+      },
+      ...mapActions([
+        'insertSong'
+      ]),
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
+    },
+    watch: {
+      query (newQuery) {
+        this.search(newQuery)
+      }
+    },
+    components: {
+      Scroll,
+      Loading,
+      NoResult,
+      Singer
+    }
+  }
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
+
+  .suggest
+    height: 100%
+    overflow: hidden
+    .suggest-list
+      padding: 0 30px
+      .suggest-item
+        display: flex
+        align-items: center
+        padding-bottom: 20px
+      .icon
+        flex: 0 0 30px
+        width: 30px
+        [class^="icon-"]
+          font-size: 14px
+          color: $color-text-d
+      .name
+        flex: 1
+        font-size: $font-size-medium
+        color: $color-text-d
+        overflow: hidden
+        .text
+          no-wrap()
+    .no-result-wrapper
+      position: absolute
+      width: 100%
+      top: 50%
+      transform: translateY(-50%)
+</style>
