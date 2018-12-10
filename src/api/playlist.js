@@ -6,6 +6,21 @@
 import {fetch} from 'common/js/common'
 
 /**
+ * 获取歌单列表
+ */
+export function getPList (cat,offset,limit) {
+  const url="/playlist/list";
+  //获取100个
+  const data={
+    cat:cat,
+    offset:offset,
+    limit:limit
+  };
+  return fetch(url,data);
+}
+
+
+/**
  * 获取歌单详细内容
  */
 export function getPlayList (id) {

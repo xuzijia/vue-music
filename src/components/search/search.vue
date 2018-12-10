@@ -35,7 +35,7 @@
           <span class="tab-link" :class="{'tab-link-active':type==100}" @click="search(100)">歌手</span>
         </div>
         <div tag="div" class="tab-item">
-      <span class="tab-link" :class="{'tab-link-active':type==1000}">歌单
+      <span class="tab-link" :class="{'tab-link-active':type==1000}" @click="search(1000)" >歌单
       </span>
         </div>
         <div tag="div" class="tab-item">

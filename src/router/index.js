@@ -78,7 +78,13 @@ export default new Router({
     },
     {
       path: '/search',
-      component: Search
+      component: Search,
+      children: [
+        {
+          path: 'playlist/:id',
+          component: Disc
+        },
+      ]
     },
 
     {
@@ -92,7 +98,13 @@ export default new Router({
 
     {
       path:'/playlist',
-      component:PlayList
+      component:PlayList,
+      children: [
+        {
+          path: ':id',
+          component: Disc
+        },
+      ]
     }
   ]
 })

@@ -35,7 +35,7 @@
     methods: {
       _getSongList() {
         if (!this.disc.id) {
-          this.$router.push('/recommend')
+          this.$router.push('/playlist')
           return
         }
         getPlayList(this.disc.id).then((res) => {

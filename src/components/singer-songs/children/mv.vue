@@ -10,8 +10,10 @@
         <li v-for="(item,index) of mvs" :key="index" @click="playMv(item.id)">
           <div class="img">
             <img :src="item.imgurl+imgSize" alt="">
+            <div class="bgzz">
+            </div>
             <div class="zz">
-            {{formatNumber(item.playCount)}}
+              <i class="iconfont icon-icon-test"></i> {{formatNumber(item.playCount)}}
             </div>
             <!--<div class="playTime">-->
               <!--05:10-->
@@ -150,6 +152,13 @@
             left  5px
             text-align center
             color $color-text-ll
+          .bgzz
+            position absolute
+            top:0
+            left 0
+            width 100%
+            height 100%
+            background-color rgba(0, 0, 0, 0.25)
 
           .playTime
             position absolute

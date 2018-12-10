@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <div class="rank" ref="rank">
-      <scroll class="top" ref="toplist" :data="topList">
+      <scroll class="top" ref="scroll" :data="topList">
         <ul v-for="(item,index) of topList" :key="index">
           <li class="item" @click="selectItem(item)">
             <div class="icon">
@@ -45,9 +45,8 @@
     methods: {
       handlePlaylist (playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
-
         this.$refs.rank.style.bottom = bottom
-        this.$refs.toplist.refresh()
+        this.$refs.scroll.refresh()
       },
       _getRankList () {
         getRankList().then((res) => {

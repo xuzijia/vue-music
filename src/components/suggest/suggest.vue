@@ -1,31 +1,47 @@
 <template>
   <scroll ref="suggest"
           class="suggest"
-          :data="result"
+          :data="getData"
           :pullup="pullup"
           :beforeScroll="beforeScroll"
           @scrollToEnd="searchMore"
           @beforeScroll="listScroll"
   >
-    <ul class="suggest-list" v-show="type==1">
-      <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
-        <div class="icon">
-          <i :class="getIconCls(item)"></i>
-        </div>
-        <div class="name">
-          <p class="text" v-html="getDisplayName(item)"></p>
-        </div>
-      </li>
-      <loading v-show="hasMore" title=""></loading>
-    </ul>
-    <div v-show="type==100">
-      <singer :singers="singers" @selectItem="select"></singer>
-      <loading title="" v-show="hasMore"></loading>
+    <div class="suggest-list">
+      <!--<ul v-show="type==1">-->
+        <!--<li @click="selectItem(item)" class="suggest-item" v-for="item in result">-->
+          <!--<div class="icon">-->
+            <!--<i :class="getIconCls(item)"></i>-->
+          <!--</div>-->
+          <!--<div class="name">-->
+            <!--<p class="text" v-html="getDisplayName(item)"></p>-->
+          <!--</div>-->
+        <!--</li>-->
+        <!--<loading v-show="hasMore" title=""></loading>-->
+      <!--</ul>-->
+
+      <div v-show="type==1">
+        <singer :songs="result" @select="selectItem"></singer>
+        <loading title="" v-show="hasMore"></loading>
+      </div>
+
+      <div v-show="type==100">
+        <singer :singers="singers" @selectItem="select"></singer>
+        <loading title="" v-show="hasMore"></loading>
+      </div>
+      <div v-show="type==1000">
+        <play-list @selectItem="selectPlayList" :playList="playList"></play-list>
+        <loading title="" v-show="hasMore"></loading>
+      </div>
     </div>
+
     <div v-show="!hasMore && !result.length && type==1" class="no-result-wrapper">
       <no-result title="抱歉，暂无搜索结果"></no-result>
     </div>
     <div v-show="!hasMore && !singers.length && type==100" class="no-result-wrapper">
+      <no-result title="抱歉，暂无搜索结果"></no-result>
+    </div>
+    <div v-show="!hasMore && !playList.length && type==1000" class="no-result-wrapper">
       <no-result title="抱歉，暂无搜索结果"></no-result>
     </div>
   </scroll>
@@ -40,6 +56,8 @@
   import {createSongBySinger} from 'common/js/song'
   import {mapMutations, mapActions} from 'vuex'
   import Singer from 'components/common/singer'
+  import PlayList from 'components/common/playlist'
+  import SongList from 'base/song-list/song-list'
 
   const perpage = 20
 
@@ -70,15 +88,33 @@
         beforeScroll: true,
         hasMore: true,
         result: [],
-        singers: []
+        singers: [],
+        playList: [],
+        video: []
       }
+    },
+    computed: {
+      getData () {
+        console.log(this.type)
+        if (this.type == SINGER) {
+          return this.singers
+        } else if (this.type == PLAYLIST) {
+          return this.playList
+        } else if (this.type == VIDEO) {
+          return this.videos
+        } else {
+          return this.result
+        }
+        this.refresh()
+      }
+
     },
     methods: {
       refresh () {
         this.$refs.suggest.refresh()
       },
-      setType(type){
-        this.type=type;
+      setType (type) {
+        this.type = type
       },
       //点击歌手进入歌手页
       select (singer) {
@@ -89,9 +125,16 @@
           path: `/singer/${singer.id}`
         })
       },
+      selectPlayList (item) {
+        this.$router.push({
+          path: `/search/playlist/${item.id}`
+        })
+        this.setDisc(item)
+      },
       search () {
         this.result = []
-        this.singers=[]
+        this.singers = []
+        this.playList = []
         //重置分页参数
         this.page = 0
         this.hasMore = true
@@ -99,17 +142,21 @@
         search(this.query, this.type, this.page * perpage, perpage).then((res) => {
           if (res.code === config.apiConfig.request_ok) {
             //根据不同的搜索类型 解析数据
-            if (this.type==SONG) {
+            if (this.type == SONG) {
               this.result = this._genResult(res.result)
               this._checkMore(res.result)
-            }else if(this.type==SINGER){
+            } else if (this.type == SINGER) {
               console.log(res.result.artists)
-              this.singers=res.result.artists==undefined?[]:res.result.artists;
-              if(res.result.artists==undefined){
-                this.hasMore=false;
-              }else{
-                this._checkMoreForSinger(res.result);
+              this.singers = res.result.artists == undefined ? [] : res.result.artists
+              if (res.result.artists == undefined) {
+                this.hasMore = false
+              } else {
+                this._checkMoreForSinger(res.result)
               }
+            } else if (this.type == PLAYLIST) {
+              this.playList = res.result.playlists
+              this._checkMoreForPlayList(res.result)
+              console.log(this.playList)
             }
           }
         })
@@ -123,12 +170,15 @@
         search(this.query, this.type, this.page * perpage, perpage).then((res) => {
           if (res.code === config.apiConfig.request_ok) {
             //根据不同的搜索类型 解析数据
-            if (this.type==SONG) {
+            if (this.type == SONG) {
               this.result = this.result.concat(this._genResult(res.result))
               this._checkMore(res.result)
-            }else if(this.type==SINGER){
-              this.singers=this.singers.concat(res.result.artists);
-              this._checkMoreForSinger(res.artists);
+            } else if (this.type == SINGER) {
+              this.singers = this.singers.concat(res.result.artists)
+              this._checkMoreForSinger(res.artists)
+            } else if (this.type == PLAYLIST) {
+              this.playList = this.playList.concat(res.result.playlists)
+              this._checkMoreForPlayList(res.result)
             }
 
           }
@@ -151,6 +201,7 @@
         }
         return ret
       },
+      //解析歌曲
       _normalizeSongs (list) {
         let ret = []
         list.forEach((musicData) => {
@@ -168,8 +219,13 @@
           this.hasMore = false
         }
       },
-      _checkMoreForSinger(data){
+      _checkMoreForSinger (data) {
         if (data.artistCount == 0 || !data.artists.length || (data.artists.length + this.page * perpage) >= data.artistCount) {
+          this.hasMore = false
+        }
+      },
+      _checkMoreForPlayList (data) {
+        if (data.playlistCount == 0 || !data.playlists.length || (data.playlists.length + this.page * perpage) >= data.playlistCount) {
           this.hasMore = false
         }
       },
@@ -177,7 +233,8 @@
         'insertSong'
       ]),
       ...mapMutations({
-        setSinger: 'SET_SINGER'
+        setSinger: 'SET_SINGER',
+        setDisc: 'SET_DISC'
       })
     },
     watch: {
@@ -189,7 +246,9 @@
       Scroll,
       Loading,
       NoResult,
-      Singer
+      Singer,
+      PlayList,
+      SongList
     }
   }
 </script>
@@ -202,7 +261,7 @@
     height: 100%
     overflow: hidden
     .suggest-list
-      padding: 0 30px
+      /*padding: 0 30px*/
       .suggest-item
         display: flex
         align-items: center

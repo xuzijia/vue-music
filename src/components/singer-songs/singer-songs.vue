@@ -1,7 +1,9 @@
 <template>
   <transition name="slide">
     <div class="music-list">
-      <back :url="backUrl"></back>
+      <div class="back" @click="back">
+        <i class="icon-back"></i>
+      </div>
       <h1 class="title">{{artist.name}}</h1>
       <div class="bg-image" :style="bgStyle">
         <div class="play-wrapper">
@@ -57,7 +59,11 @@
         backUrl: '/singer'
       }
     },
-
+    methods:{
+      back() {
+        this.$router.back()
+      },
+    },
     computed: {
       bgStyle () {
         return `background-image:url('${this.artist.picUrl}?param=450y300')`
