@@ -10,6 +10,7 @@ export function fetch (url, param) {
   param = Qs.stringify(param);
   return new Promise((resolve, reject) => {
     axios.post(url,param).then(response=>{
+      console.log(response)
       resolve(response.data);
     },err => {
       reject(err);
@@ -18,3 +19,4 @@ export function fetch (url, param) {
     })
   })
 }
+

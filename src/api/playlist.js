@@ -19,6 +19,13 @@ export function getPList (cat,offset,limit) {
   return fetch(url,data);
 }
 
+/**
+ * 获取歌单全部分类
+ */
+export function getCatList () {
+  const url="/playlist/catlist";
+  return fetch(url)
+}
 
 /**
  * 获取歌单详细内容
@@ -42,5 +49,6 @@ export function getAlbumList (id) {
   };
   return fetch(url,data);
 }
+
 
 

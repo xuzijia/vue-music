@@ -3,7 +3,7 @@
  * @author simple
  * @date 2018/10/30 09:47
  */
-import {fetch} from 'common/js/common'
+import {fetch,fetchForCookie} from 'common/js/common'
 
 /**
  * 获取推荐页banner
@@ -50,5 +50,20 @@ export function getNewAlbumList () {
     type:"ZH"
   }
   return fetch(url,data);
+}
 
+/**
+ * 获取每日推荐 需登录
+ */
+export function getDayRecommend () {
+  const url="/user/recommend";
+  return fetch(url,{});
+}
+
+/**
+ * 获取推荐歌单 需登录
+ */
+export function getRecPlayList () {
+  const url="/playlist/recommend";
+  return fetch(url);
 }

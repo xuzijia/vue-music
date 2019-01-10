@@ -6,27 +6,8 @@
             :beforeScroll="beforeScroll"
             @scrollToEnd="loadMore"
     >
-      <ul>
-        <li v-for="(item,index) of mvs" :key="index" @click="playMv(item.id)">
-          <div class="img">
-            <img :src="item.imgurl+imgSize" alt="">
-            <div class="bgzz">
-            </div>
-            <div class="zz">
-              <i class="iconfont icon-icon-test"></i> {{formatNumber(item.playCount)}}
-            </div>
-            <!--<div class="playTime">-->
-              <!--05:10-->
-            <!--</div>-->
-          </div>
-          <div class="title">
-            <p class="name">{{item.name}}</p>
-            <p class="time">{{item.publishTime}}</p>
-          </div>
-        </li>
-        <loading v-show="hasMore" title=""></loading>
-      </ul>
-      <div class="loading-container" v-show="!mvs.length"   v-if="load">
+      <video-mv :mvs="mvs" @playMv="playMv" :hasMore="hasMore"></video-mv>
+      <div class="loading-container" v-show="!mvs.length" v-if="load">
         <loading></loading>
       </div>
       <div v-show="!mvs.length && !load" class="no-result-wrapper">
@@ -39,12 +20,12 @@
 <script>
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import {numberFormat} from 'base/utils/musicUtils'
   import {mapGetters} from 'vuex'
   import {getSingerMv} from 'api/singer'
   import {config} from 'api/config'
   import {playlistMixin} from 'common/js/mixin'
   import NoResult from 'base/no-result/no-result'
+  import VideoMv from 'components/common/video'
   export default {
     name: 'mv',
     mixins: [playlistMixin],
@@ -90,9 +71,6 @@
             }
           })
       },
-      formatNumber(number){
-        return numberFormat(number);
-      },
       loadMore () {
         if (!this.hasMore) {
           return
@@ -114,7 +92,8 @@
     components:{
       Scroll,
       Loading,
-      NoResult
+      NoResult,
+      VideoMv
     }
   }
 </script>
@@ -133,59 +112,11 @@
       width: 100%
       height: 100%
       overflow: hidden
-      li
-        display flex
-        margin-bottom 10px
-        align-items center
-        margin-left 10px
-        border-bottom:1px solid rgba(204, 204, 204, 0.1)
-        .img
-          width 140px
-          height 70px
-          position relative
-          font-size  $font-size-small
-          img
-            border-radius 5px
-          .zz
-            position absolute
-            top 5px
-            left  5px
-            text-align center
-            color $color-text-ll
-          .bgzz
-            position absolute
-            top:0
-            left 0
-            width 100%
-            height 100%
-            background-color rgba(0, 0, 0, 0.25)
-
-          .playTime
-            position absolute
-            bottom 5px
-            left  5px
-            text-align center
-            color $color-text-l
-        .title
-          width 75%
-          padding-left 15px
-          .time
-            font-size $font-size-medium
-            color: $color-text-l
-            padding-top 10px
-          .name
-            width 75%
-            overflow: hidden
-            text-overflow:ellipsis
-            white-space: nowrap
     .no-result-wrapper
       position: absolute
       width: 100%
       top: 50%
       transform: translateY(-50%)
-
-
-
 
 </style>
 

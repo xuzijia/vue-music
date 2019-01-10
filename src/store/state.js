@@ -12,5 +12,9 @@ const state = {
   disc:{},
   album:{},
   searchHistory: loadSearch(),
+  playHistory: loadPlay(),
+  favoriteList: loadFavorite(),
+  //登录状态
+  loginStatus:false,
 }
 export default state

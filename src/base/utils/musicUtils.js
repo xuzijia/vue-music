@@ -3,6 +3,7 @@
  * @author simple
  * @date 2018/11/22 17:33
  */
+
 /**
  * 时间戳转日期格式
  * @param time 时间戳
@@ -67,4 +68,43 @@ export function numberFormatForOne (number) {
     }
 }
 
+/**
+ * 获取cookie
+ * @param cookieName
+ * @returns {string}
+ */
+export function readCookie(cookieName) {
+  let theCookie = "" + document.cookie;
+  let ind = theCookie.indexOf(cookieName);
+  if(ind==-1 || cookieName=="") return "";
+  let ind1 = theCookie.indexOf(';',ind);
+  if(ind1==-1) ind1 = theCookie.length;
+  /*读取Cookie值*/
+  return unescape(theCookie.substring(ind+cookieName.length+1,ind1));
+}
 
+/***
+ * 设置Cookie值 setCookie("id",1);
+ * @param {string} cookieName Cookie名称
+ */
+export function setCookie(cookieName, cookieValue) {
+  document.cookie = cookieName + "=" + cookieValue;
+}
+
+/***
+ * 删除cookie中指定Cookie名称
+ * @param {string} $name Cookie名称
+ */
+export function deleteCookie(cookieName){
+  let ex = new Date();
+  ex.setTime(ex.getTime()-1);
+  document.cookie = cookieName + "=; expires="+ex.toGMTString() + ";path=/";
+}
+
+export function getLoginStatus () {
+  if(readCookie("MUSIC_U")!=""){
+    return true
+  }else{
+    return false
+  }
+}

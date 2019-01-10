@@ -2,6 +2,7 @@
   <transition name="slide">
     <div class="rank" ref="rank">
       <scroll class="top" ref="scroll" :data="topList">
+        <div>
         <ul v-for="(item,index) of topList" :key="index">
           <li class="item" @click="selectItem(item)">
             <div class="icon">
@@ -15,6 +16,7 @@
             </ul>
           </li>
         </ul>
+        </div>
         <div class="loading-container" v-show="!topList.length">
           <loading></loading>
         </div>

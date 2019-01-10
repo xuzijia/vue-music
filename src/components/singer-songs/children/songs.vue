@@ -19,6 +19,7 @@
             <i class="icon iconfont icon-video"></i>
           </div>
         </li>
+        <li style="height: 60px;border: none"></li>
       </ul>
       <div class="loading-container" v-show="!songs.length">
         <loading></loading>

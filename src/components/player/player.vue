@@ -30,8 +30,8 @@
             </div>
             <div class="playing-lyric-wrapper">
               <div class="playing-lyric">{{playingLyric}}</div>
-              <div class="playing-lyric" v-show="!playingLyric">纯音乐 请欣赏</div>
-            </div>
+              <!--<div class="playing-lyric" v-show="!playingLyric">纯音乐 请欣赏</div>-->
+            </div>、
           </div>
           <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
@@ -69,8 +69,8 @@
             <div class="icon i-right" :class="disableCls">
               <i @click="next" class="icon-next"></i>
             </div>
-            <div class="icon i-right">
-              <i class="icon icon-not-favorite"></i>
+            <div class="icon i-right" >
+              <i @click="toggleFavorite(currentSong)" class="icon" :class="getFavoriteIcon(currentSong)"></i>
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@
         </div>`
       </div>
     </transition>
-    <!--<playlist ref="playlist"></playlist>-->
+    <playlist ref="playlist"></playlist>
     <audio ref="audio" :src="currentSong.url" @play="ready" @error="error" @timeupdate="updateTime"
            @ended="end" autoplay  type="audio/mpeg"></audio>
   </div>
@@ -112,8 +112,7 @@
   import Scroll from 'base/scroll/scroll'
   import {playerMixin} from 'common/js/mixin'
   import {getLyric} from 'api/song'
-  // import Playlist from 'components/playlist/playlist'
-  import wx from 'weixin-js-sdk'
+  import Playlist from 'components/playqueue/playlist'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
@@ -270,7 +269,7 @@
       },
       ready() {
         this.songReady = true
-        // this.savePlayHistory(this.currentSong)
+        this.savePlayHistory(this.currentSong)
       },
       error() {
         this.songReady = true
@@ -453,7 +452,6 @@
         if(newSong.dt<10){
           newSong.dt*=1000;
         }
-        // console.log(newSong.dt);
         clearTimeout(this.timer)
         const audio = this.$refs.audio
         this.timer = setTimeout(() => {
@@ -480,7 +478,7 @@
       ProgressBar,
       ProgressCircle,
       Scroll,
-      // Playlist
+      Playlist
     }
   }
 </script>

@@ -1,30 +1,28 @@
 <template>
   <transition name="slide">
-    <music-list :title="title" :bg-image="bgImage" :songs="songs" :rank="rank" :user="user"></music-list>
+    <music-list :title="title" :bg-image="bgImage" :songs="songs" :rank="rank"></music-list>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
   import MusicList from 'components/music-list/music-list'
-  import {getPlayList} from 'api/playlist'
+  import {getDayRecommend} from 'api/recommend'
   import {config} from 'api/config'
-  import {mapGetters} from 'vuex'
   import {createSong} from 'common/js/song'
-
+  import {mapMutations} from 'vuex'
   export default {
     computed: {
       title() {
-        return this.disc.name
+        var date = new Date()
+        var hours = date.getHours()
+        var day = date.getDate()
+        day=hours<6?day-1:day;
+        return `每日推荐 ( ${day} 日 )`
       },
       bgImage() {
-        return this.disc.coverImgUrl?this.disc.coverImgUrl:this.disc.picUrl
+        //todo 根据日期生成封面
+        return ""
       },
-      user(){
-        return this.disc.creator;
-      },
-      ...mapGetters([
-        'disc'
-      ])
     },
     data() {
       return {
@@ -33,18 +31,16 @@
       }
     },
     created() {
-      this._getSongList()
+      this._getDayRecommend()
     },
     methods: {
-      _getSongList() {
-        if (!this.disc.id) {
-          this.$router.push('/playlist')
-          return
-        }
-        getPlayList(this.disc.id).then((res) => {
+      _getDayRecommend() {
+        getDayRecommend().then((res) => {
           if (res.code === config.apiConfig.request_ok) {
-            console.log(res);
-            this.songs = this._normalizeSongs(res.result.tracks)
+            this.songs = this._normalizeSongs(res.recommend)
+          }else if(res.code==config.apiConfig.no_login){
+            //用户未登录
+            this.setLoginStatus(true)
           }
         })
       },
@@ -56,7 +52,10 @@
           }
         })
         return ret
-      }
+      },
+      ...mapMutations({
+        'setLoginStatus':"SET_LOGIN_STATUS"
+      })
     },
     components: {
       MusicList

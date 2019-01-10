@@ -14,10 +14,6 @@ export const currentIndex = state => state.currentIndex
 
 export const currentSong = (state) => {
   let song=state.playlist[state.currentIndex];
-  // if(song){
-  //   song.url=`http://music.163.com/song/media/outer/url?id=${song.id}.mp3`
-  //   song.dt=song.dt/1000
-  // }
   return song || {}
 }
 
@@ -28,4 +24,12 @@ export const disc = state => state.disc
 export const album = state => state.album
 
 export const searchHistory = state => state.searchHistory
+
+export const loginStatus = state => state.loginStatus
+
+
+export const playHistory = state => state.playHistory
+
+export const favoriteList = state => state.favoriteList
+
 

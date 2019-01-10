@@ -20,8 +20,8 @@
         <!--<loading v-show="hasMore" title=""></loading>-->
       <!--</ul>-->
 
-      <div v-show="type==1">
-        <singer :songs="result" @select="selectItem"></singer>
+      <div v-show="type==1" class="song-list">
+        <song-list :songs="result" @select="selectItem"></song-list>
         <loading title="" v-show="hasMore"></loading>
       </div>
 
@@ -29,21 +29,23 @@
         <singer :singers="singers" @selectItem="select"></singer>
         <loading title="" v-show="hasMore"></loading>
       </div>
-      <div v-show="type==1000">
+      <div v-show="type==1000" class="song-list">
         <play-list @selectItem="selectPlayList" :playList="playList"></play-list>
         <loading title="" v-show="hasMore"></loading>
       </div>
     </div>
 
-    <div v-show="!hasMore && !result.length && type==1" class="no-result-wrapper">
-      <no-result title="抱歉，暂无搜索结果"></no-result>
-    </div>
-    <div v-show="!hasMore && !singers.length && type==100" class="no-result-wrapper">
-      <no-result title="抱歉，暂无搜索结果"></no-result>
-    </div>
-    <div v-show="!hasMore && !playList.length && type==1000" class="no-result-wrapper">
-      <no-result title="抱歉，暂无搜索结果"></no-result>
-    </div>
+    <div v-show="!hasMore">
+      <div v-show="!result.length && type==1" class="no-result-wrapper">
+        <no-result title="抱歉，暂无搜索结果"></no-result>
+      </div>
+      <div v-show="!singers.length && type==100" class="no-result-wrapper">
+        <no-result title="抱歉，暂无搜索结果"></no-result>
+      </div>
+      <div v-show="!playList.length && type==1000" class="no-result-wrapper">
+        <no-result title="抱歉，暂无搜索结果"></no-result>
+      </div>
+  </div>
   </scroll>
 </template>
 
@@ -58,6 +60,7 @@
   import Singer from 'components/common/singer'
   import PlayList from 'components/common/playlist'
   import SongList from 'base/song-list/song-list'
+  import VideoMv from 'components/common//video'
 
   const perpage = 20
 
@@ -118,6 +121,7 @@
       },
       //点击歌手进入歌手页
       select (singer) {
+        this.$emit('select', singer)
         //将歌手的信息设置到vuex
         this.setSinger(singer)
         //进入歌手详情页
@@ -126,6 +130,7 @@
         })
       },
       selectPlayList (item) {
+        this.$emit('select', item)
         this.$router.push({
           path: `/search/playlist/${item.id}`
         })
@@ -191,6 +196,11 @@
         this.insertSong(item)
         this.$emit('select', item)
       },
+      playMv(id){
+        this.$router.push({
+          path:`/mv/player/${id}`
+        })
+      },
       getIconCls () {
         return 'icon-music'
       },
@@ -248,7 +258,8 @@
       NoResult,
       Singer,
       PlayList,
-      SongList
+      SongList,
+      VideoMv
     }
   }
 </script>
@@ -260,25 +271,10 @@
   .suggest
     height: 100%
     overflow: hidden
+    color #66ccff
     .suggest-list
-      /*padding: 0 30px*/
-      .suggest-item
-        display: flex
-        align-items: center
-        padding-bottom: 20px
-      .icon
-        flex: 0 0 30px
-        width: 30px
-        [class^="icon-"]
-          font-size: 14px
-          color: $color-text-d
-      .name
-        flex: 1
-        font-size: $font-size-medium
-        color: $color-text-d
-        overflow: hidden
-        .text
-          no-wrap()
+      .song-list
+        padding 0px 10px
     .no-result-wrapper
       position: absolute
       width: 100%

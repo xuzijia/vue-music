@@ -6,9 +6,13 @@
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="play-wrapper">
-        <div ref="playBtn" v-show="songs.length>0" class="play" @click="random">
+        <div ref="playBtn" class="play" @click="random">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
+        </div>
+        <div v-if="user.nickname" ref="user" class="user" @click="selectUser(user)">
+          <img :src="user.avatarUrl+userImageSize" alt="">
+          <span v-show="user.avatarUrl">{{user.nickname}} ></span>
         </div>
       </div>
       <div class="filter" ref="filter"></div>
@@ -23,6 +27,7 @@
         <loading></loading>
       </div>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -56,11 +61,16 @@
       rank: {
         type: Boolean,
         default: false
+      },
+      user:{
+        type:Object,
+        default:() => ({})
       }
     },
     data() {
       return {
-        scrollY: 0
+        scrollY: 0,
+        userImageSize:"?param=100y100"
       }
     },
     computed: {
@@ -98,9 +108,15 @@
         })
       },
       random() {
+        if(this.songs.length==0){
+          return;
+        }
         this.randomPlay({
           list: this.songs
         })
+      },
+      selectUser(user){
+        this.$router.push(`/userDetail/${user.userId}`)
       },
       ...mapActions([
         'selectPlay',
@@ -128,10 +144,12 @@
           this.$refs.bgImage.style.paddingTop = 0
           this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
           this.$refs.playBtn.style.display = 'none'
+          this.$refs.user.style.display = 'none'
         } else {
           this.$refs.bgImage.style.paddingTop = '70%'
           this.$refs.bgImage.style.height = 0
           this.$refs.playBtn.style.display = ''
+          this.$refs.user.style.display = ''
         }
         this.$refs.bgImage.style[transform] = `scale(${scale})`
         this.$refs.bgImage.style.zIndex = zIndex
@@ -190,6 +208,8 @@
         bottom: 20px
         z-index: 50
         width: 100%
+        display flex
+        justify-content center
         .play
           box-sizing: border-box
           width: 135px
@@ -200,6 +220,10 @@
           color: $color-theme
           border-radius: 100px
           font-size: 0
+          /*display flex*/
+          /*align-items center*/
+          /*justify-content center*/
+          /*width 35%*/
           .icon-play
             display: inline-block
             vertical-align: middle
@@ -209,6 +233,17 @@
             display: inline-block
             vertical-align: middle
             font-size: $font-size-small
+        .user
+          display flex
+          align-items center
+          width 50%
+          overflow hidden
+          text-overflow ellipsis
+          img
+            width 40px
+            height 40px
+            border-radius 40px
+            margin-right 10px
       .filter
         position: absolute
         top: 0

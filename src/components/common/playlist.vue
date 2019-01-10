@@ -18,11 +18,13 @@
         </p>
       </div>
     </li>
+    <loading v-show="hasMore" title=''></loading>
   </ul>
 </template>
 
 <script>
   import {numberFormat} from 'base/utils/musicUtils'
+  import Loading from 'base/loading/loading'
   export default {
     data () {
       return {
@@ -32,6 +34,10 @@
     props: {
       playList: {
         type: Array,
+      },
+      hasMore:{
+        type:Boolean,
+        default:false
       }
     },
     methods: {
@@ -41,6 +47,9 @@
       formatNumber(number){
         return numberFormat(number);
       },
+    },
+    components:{
+      Loading
     }
   }
 </script>

@@ -11,15 +11,15 @@
             </div>
           </slider>
         </div>
-        <div class="but" v-show="banners.length">
+        <div class="but">
           <!--功能菜单版面设计-->
-          <div class="fm">
+          <div class="my" @click="selectMy">
             <div class="icon">
-              <i class="iconfont icon-diantaizhibo"></i>
+              <i class="iconfont icon-yinleyinpin"></i>
             </div>
-            <span class="text">私人FM</span>
+            <span class="text">我的音乐</span>
           </div>
-          <div>
+          <div @click="selectDay">
             <div class="icon">
               <i class="iconfont icon-rili1"></i>
             </div>
@@ -47,9 +47,9 @@
           <div class="playlist">
             <div class="item" v-for="(item,index) of playlists" :key="index" @click="selectItem(item)">
                 <div class="img">
-                  <img v-lazy="item.coverImgUrl+imgSize" width="100" height="100" >
+                  <img v-lazy="item.coverImgUrl?item.coverImgUrl+imgSize:item.picUrl+imgSize" width="100" height="100" >
                 </div>
-                <span class="item-name">{{item.name}}</span>
+                <span class="item-name row-two" :title="item.name">{{item.name}}</span>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
                 <div class="img">
                   <img v-lazy="item.picUrl+imgSize" width="100" height="100" >
                 </div>
-                <div class="album-name">{{item.name}}</div>
+                <div class="album-name row-one" :title="item.name">{{item.name}}</div>
                 <div class="album-singer">{{item.artist.name}}</div>
               </div>
           </div>
@@ -86,11 +86,11 @@
   import Slider from 'base/slider/slider'
   import Loading from 'base/loading/loading'
   import Scroll from 'base/scroll/scroll'
-  import {getBanner, getPlayList,getDjRecommend,getNewAlbumList} from 'api/recommend'
+  import {getBanner, getPlayList,getDjRecommend,getNewAlbumList,getDayRecommend,getRecPlayList} from 'api/recommend'
   import {config} from 'api/config'
-  import {mapMutations} from 'vuex'
+  import {mapMutations,mapGetters} from 'vuex'
   import {playlistMixin} from 'common/js/mixin'
-
+  import {setCookie,readCookie,deleteCookie,getLoginStatus} from 'base/utils/musicUtils'
   export default {
     mixins: [playlistMixin],
     data () {
@@ -110,6 +110,11 @@
       //获取新碟专辑
       this._getNewAlbumList()
     },
+    computed:{
+      ...mapGetters([
+        'loginStatus',
+      ])
+    },
     methods: {
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
@@ -120,6 +125,19 @@
         this.$router.push(
           {path:"/rank"}
         )
+      },
+      //进入每日推荐
+      selectDay(){
+        //判断用户是否登录
+        if(getLoginStatus()){
+          //进入每日推荐
+          this.$router.push({
+            path:"/user/day"
+          })
+        }else{
+          //未登录
+          this.setLoginStatus(true);
+       }
       },
       selectPlaylist(){
         this.$router.push({
@@ -140,12 +158,23 @@
         })
       },
       _getPlayList () {
-        getPlayList().then((res) => {
-          if (res.code === config.apiConfig.request_ok) {
-            this.playlists = res.playlists
-          }
+        //判断用户是否登录 如果已登录 获取用户每天推荐歌单 否则获取热门歌单
+        if(getLoginStatus()){
+          //获取推荐歌单
+          getRecPlayList().then((res)=>{
+            if (res.code==config.apiConfig.request_ok){
+              this.playlists = res.recommend
+            }
+          })
+        }else{
+          //获取热门歌单
+          getPlayList().then((res) => {
+            if (res.code === config.apiConfig.request_ok) {
+              this.playlists = res.playlists
+            }
+          })
+        }
 
-        })
       },
       _getDjList(){
         getDjRecommend().then((res) => {
@@ -173,17 +202,23 @@
         })
         this.setAlbum(item)
       },
+      selectMy(){
+        this.$router.push({
+          path:"/my",
+        })
+      },
 
       ...mapMutations({
         setDisc:'SET_DISC',
-        setAlbum:'SET_ALBUM'
+        setAlbum:'SET_ALBUM',
+        setLoginStatus:'SET_LOGIN_STATUS'
       })
 
     },
     components: {
       Slider,
       Loading,
-      Scroll
+      Scroll,
     }
   }
 </script>
@@ -244,6 +279,7 @@
       img{
         border-radius 5px
       }
+      padding-bottom 15px
     .item-name,.album-name
       font-size 12px
       overflow hidden
@@ -254,5 +290,16 @@
       font-size 10px
       line-height 16px
       padding-top 5px
-
+  .row-two
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  .row-one
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 </style>
