@@ -271,7 +271,6 @@
   .suggest
     height: 100%
     overflow: hidden
-    color #66ccff
     .suggest-list
       .song-list
         padding 0px 10px

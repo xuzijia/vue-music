@@ -30,3 +30,16 @@ export function getMvInfo (id) {
   }
   return fetch(url,data);
 }
+
+/**
+ * 获取qq音乐源
+ * @param searchStr 歌手+歌曲进行搜索
+ * @returns url
+ */
+export function getQQMusic (searchStr) {
+  const url="qq/switchSource";
+  const data={
+    searchStr:searchStr,
+  }
+  return fetch(url,data);
+}

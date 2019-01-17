@@ -217,84 +217,86 @@
       width: 80%
       no-wrap()
       text-align: center
-      line-height: 40px
+      line-height: 50px
       font-size: $font-size-large
       color: $color-theme
-    .main
-      position: fixed
-      width: 100%
-      top: 45px
-      bottom: 0
-      .nologin
-        text-align center
-        color $color-dialog-background
-        margin-top 15px
-        span
-          color #d93f30
-          text-decoration underline
-      .butItem
-        display flex
-        padding 0px 30px
-        line-height 45px
-        .icon
-          width 15%
-          text-align left
-          padding-top 3px
-          i
-            font-size $font-size-large-x
-            color $color-theme
-        .t
-          font-size $font-size-large
-          width 70%
-          border-bottom 1px dotted $color-dialog-background
-        .count
-          width 15%
+    .playlist-content
+      height: 100%
+      overflow: hidden
+      .main
+        position: relative
+        width: 100%
+        overflow: hidden
+        .nologin
+          text-align center
           color $color-dialog-background
-          font-size $font-size-large
-          border-bottom 1px dotted $color-dialog-background
-          text-align right
-
-      .create
-        margin-top 10px
-        .t
-          color $color-theme
-          padding 10px 20px
-          background-color $color-background-d
-      .mylist
-        margin-top 10px
-        .t
-          color $color-theme
-          padding 10px 20px
-          background-color $color-background-d
-    ul
-      margin-top 20px
-      padding 0px 10px
-      li
-        display flex
-        padding-bottom 10px
-        .img
-          width 20%
-          position relative
-          img
-            width 50px
-            height 50px
-            border-radius 5px
-        .info
-          width 80%
-          margin-left 1%
-          border-bottom 1px dotted $color-dialog-background
-          .name
-            font-size: $font-size-medium
-            overflow: hidden
-            text-overflow: ellipsis
-            white-space: nowrap
+          margin-top 15px
+          span
+            color #d93f30
+            text-decoration underline
+        .butItem
+          display flex
+          padding 0px 30px
+          line-height 45px
+          .icon
+            width 15%
+            text-align left
+            padding-top 3px
+            i
+              font-size $font-size-large-x
+              color $color-theme
+          .t
+            font-size $font-size-large
+            width 70%
+            border-bottom 1px dotted $color-dialog-background
           .count
-            font-size $font-size-small
-            color $color-text-l
-            overflow: hidden
-            text-overflow: ellipsis
-            white-space: nowrap
-            padding 10px 0px
+            width 15%
+            color $color-dialog-background
+            font-size $font-size-large
+            border-bottom 1px dotted $color-dialog-background
+            text-align right
+
+        .create
+          margin-top 10px
+          .t
+            color $color-theme
+            padding 10px 20px
+            background-color $color-background-d
+        .mylist
+          margin-top 10px
+          .t
+            color $color-theme
+            padding 10px 20px
+            background-color $color-background-d
+      ul
+        margin-top 20px
+        padding 0px 10px
+        li
+          display flex
+          padding-bottom 10px
+          .img
+            width 20%
+            position relative
+            img
+              width 50px
+              height 50px
+              border-radius 5px
+          .info
+            width 80%
+            margin-left 1%
+            border-bottom 1px dotted $color-dialog-background
+            .name
+              font-size: $font-size-medium
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+            .count
+              font-size $font-size-small
+              color $color-text-l
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+              padding 10px 0px
 
   .loading-container
     position absolute

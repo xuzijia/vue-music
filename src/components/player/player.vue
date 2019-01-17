@@ -96,7 +96,7 @@
       </div>
     </transition>
     <playlist ref="playlist"></playlist>
-    <audio ref="audio" :src="currentSong.url" @play="ready" @error="error" @timeupdate="updateTime"
+    <audio ref="audio" :src="currentSong.url" @play="ready" @error="error($event)" @timeupdate="updateTime"
            @ended="end" autoplay  type="audio/mpeg"></audio>
   </div>
 </template>
@@ -111,7 +111,7 @@
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import {playerMixin} from 'common/js/mixin'
-  import {getLyric} from 'api/song'
+  import {getLyric,getQQMusic} from 'api/song'
   import Playlist from 'components/playqueue/playlist'
 
   const transform = prefixStyle('transform')
@@ -271,8 +271,26 @@
         this.songReady = true
         this.savePlayHistory(this.currentSong)
       },
-      error() {
-        this.songReady = true
+      error(e) {
+        var code=e.target.error.code
+        //code==4 说明该歌曲没有版权
+        console.log(code);
+        if(code==4){
+          //发起请求
+          let searchStr=this.currentSong.singer+" "+this.currentSong.name;
+          getQQMusic(searchStr).then((res)=>{
+            if(res.code==config.apiConfig.request_ok){
+              this.currentSong.url=res.url;
+            }else{
+              alert("没有版权");
+              this.songReady = true
+            }
+          })
+        }else{
+          alert("网络出问题了吗？");
+          //code==2 没有网络
+          this.songReady = true
+        }
       },
       updateTime(e) {
         this.currentTime = e.target.currentTime

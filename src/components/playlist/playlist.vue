@@ -240,7 +240,7 @@
     .catlist
       position fixed
       top:46px
-      bottom -60px
+      bottom -80px
       width 100%
       color #fff
       z-index 210

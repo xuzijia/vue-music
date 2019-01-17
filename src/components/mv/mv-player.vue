@@ -17,9 +17,11 @@
 
           <!--mv详细信息-->
           <div class="detail">
-            <h1 class="title">{{mvData.name}}</h1>
+            <h1 class="title">{{mvData.name}}
+            </h1>
+
             <p class="singer">
-              <i class="icon iconfont icon-user" style="font-size: 20px"></i>&nbsp;&nbsp;{{mvData.artistName}}
+              <i class="icon iconfont icon-user " style="font-size: 20px"></i>&nbsp;&nbsp;{{mvData.artistName}}
             </p>
             <p class="ptime">
               <span class="t">发布：{{mvData.publishTime}}</span>
@@ -27,7 +29,7 @@
             </p>
 
             <!--mv数据-->
-            <div class="mvdata">
+            <div class="mvdata" v-show="mvData.likeCount">
               <div class="item">
                 <i class="icon iconfont icon-dianzan"></i>
                 <p>{{mvData.likeCount}}</p>
@@ -40,10 +42,10 @@
                 <i class="icon iconfont icon-pinglun"></i>
                 <p>{{mvData.commentCount}}</p>
               </div>
-              <div class="item">
-                <i class="icon iconfont icon-fenxiang"></i>
-                <p>{{mvData.shareCount}}</p>
-              </div>
+              <a class="item" style="color: #0086b3" :href="currMvUrl" download="1.mp4">
+                <i class="icon iconfont icon-xiazai"></i>
+                <p>立即下载</p>
+              </a>
             </div>
 
 
@@ -150,6 +152,10 @@
                 poster: this.mvData.cover, //你的封面地址
 
               })
+            }else{
+              //找不到mv信息
+              alert("找不到mv信息！");
+              this.$router.back();
             }
           })
         }

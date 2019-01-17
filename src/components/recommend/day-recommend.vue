@@ -21,7 +21,7 @@
       },
       bgImage() {
         //todo 根据日期生成封面
-        return ""
+        return require('common/image/day.jpg')
       },
     },
     data() {
