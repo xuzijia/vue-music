@@ -12,4 +12,4 @@ Vue-Music：[http://91cloud.top](http://91cloud.top)
 
 1.首页
 
-![首页] (https://raw.githubusercontent.com/xuzijia/vue-music/master/show/Snip20190121_1.png)
+![博客系统主页效果图](https://raw.githubusercontent.com/xuzijia/vue-music/master/show/Snip20190121_1.png)
