@@ -8,7 +8,7 @@
       <div class="form">
         <div class="input">
           <i class="iconfont icon-phone"></i>
-          <input ref="query" style="outline:none;" v-model="account" class="box" placeholder="手机号 / 网易邮箱"/>
+          <input ref="query" style="outline:none;" v-model="account" class="box" placeholder="手机号"/>
           <i @click="clearPhone" v-show="account" class="icon-dismiss"></i>
         </div>
         <div class="input">
