@@ -7,6 +7,8 @@
 ## 项目预览地址
 Vue-Music：[http://91cloud.top](http://91cloud.top)
 
+## 音乐接口服务
+[Vue-Music](https://github.com/xuzijia/CloudMusicApi)
 
 ## 项目预览
 
