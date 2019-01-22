@@ -68,3 +68,6 @@ Vue-Music：[http://91cloud.top](http://91cloud.top)
 > *13. 音乐主界面2*
 
 ![音乐主界面2](https://raw.githubusercontent.com/xuzijia/vue-music/master/show/Snip20190121_13.png)
+
+
+##### 项目仅供个人学习使用，非商用用途，如果涉及版权问题，请及时告知。
