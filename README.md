@@ -5,10 +5,10 @@
 
 
 ## 项目预览地址
-Vue-Music：[http://91cloud.top](http://91cloud.top)
+线上项目演示：[http://91cloud.top](http://91cloud.top)
 
 ## 音乐接口服务
-[CloudMusicApi](https://github.com/xuzijia/CloudMusicApi)
+Github传送门： [https://github.com/xuzijia/CloudMusicApi](https://github.com/xuzijia/CloudMusicApi)
 
 ## 项目预览
 
@@ -70,4 +70,4 @@ Vue-Music：[http://91cloud.top](http://91cloud.top)
 ![音乐主界面2](https://raw.githubusercontent.com/xuzijia/vue-music/master/show/Snip20190121_13.png)
 
 
-##### 项目仅供个人学习使用，非商用用途，如果涉及版权问题，请及时告知。
+##### 项目仅供个人学习使用，非商用用途，如果涉及版权问题，请及时告知。`
